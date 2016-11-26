@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using Newtonsoft.Json;
 using Wox.Plugin.OldSchoolRunescape.Models;
@@ -28,7 +29,7 @@ namespace Wox.Plugin.OldSchoolRunescape
             List<Result> results = searchResponse.Items.Select(x => new Result
             {
                 Title = x.Title,
-                SubTitle = x.Snippet,
+                SubTitle = Regex.Replace(x.Snippet, "<[^>]*>", ""), // quick-and-dirty "strip HTML"
                 IcoPath = "Images\\osrs.png",
                 Action = a =>
                 {
@@ -36,7 +37,7 @@ namespace Wox.Plugin.OldSchoolRunescape
                     {
                         System.Diagnostics.Process.Start(x.Url);
                     }
-                    
+
                     return true;
                 }
             }).ToList();
