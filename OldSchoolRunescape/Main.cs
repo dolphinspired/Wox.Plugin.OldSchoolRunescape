@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wox.Plugin;
 
-namespace OldSchoolRunescape
+namespace Wox.Plugin.OldSchoolRunescape
 {
     public class Main : IPlugin
     {
@@ -13,7 +12,11 @@ namespace OldSchoolRunescape
 
         public List<Result> Query(Query query)
         {
-            throw new NotImplementedException();
+            var results = new List<Result>();
+
+
+
+            return results;
         }
     }
 }
