@@ -12,11 +12,7 @@ namespace Wox.Plugin.OldSchoolRunescape
 
         public List<Result> Query(Query query)
         {
-            var results = new List<Result>();
-
-
-
-            return results;
+            throw new NotImplementedException();
         }
     }
 }
