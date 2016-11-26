@@ -6,23 +6,15 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
     [TestFixture]
     public class PluginTests
     {
-        private Main _main;
+        private static Main _program;
 
-        private Main Program
+        [OneTimeSetUp]
+        public void SetUp()
         {
-            get
-            {
-                if (_main == null)
-                {
-                    _main = new Main();
-                }
-
-                return _main;
-            }
+            _program = new Main();
         }
 
-        [TestCase("runite ore")]
-        public void TestApi(string search)
+        private static List<Result> RunQuery(string search)
         {
             var query = new Query
             {
@@ -30,7 +22,13 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
                 Terms = search.Split(' ')
             };
 
-            List<Result> results = Program.Query(query);
+            return _program.Query(query);
+        }
+
+        [TestCase("runite ore")]
+        public void TestApi(string search)
+        {
+            var results = RunQuery(search);
 
             Assert.That(results, Is.Not.Null);
         }
@@ -38,18 +36,21 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
         [TestCase("bronze longsword")]
         public void TestBrowserStart(string search)
         {
-            var query = new Query
-            {
-                ActionKeyword = "osrs",
-                Terms = search.Split(' ')
-            };
-
-            List<Result> results = Program.Query(query);
+            var results = RunQuery(search);
 
             results[0].Action(new ActionContext());
 
             // If you got here, ^that didn't blow up. gz
             Assert.That(true);
+        }
+
+        [TestCase("rune long", "rune longsword")]
+        [TestCase("zulrah", "zulrah")]
+        public void TestBrowserStart(string search, string expectedFirstTitle)
+        {
+            var results = RunQuery(search);
+
+            Assert.That(results[0].Title.ToLower(), Is.EqualTo(expectedFirstTitle.ToLower()));
         }
     }
 }
