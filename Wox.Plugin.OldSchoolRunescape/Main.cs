@@ -10,9 +10,11 @@ namespace Wox.Plugin.OldSchoolRunescape
 {
     public class Main : IPlugin
     {
+        private PluginInitContext _context;
+
         public void Init(PluginInitContext context)
         {
-            
+            _context = context;
         }
 
         public List<Result> Query(Query query)
@@ -27,11 +29,13 @@ namespace Wox.Plugin.OldSchoolRunescape
             {
                 Title = x.Title,
                 SubTitle = x.Snippet,
+                IcoPath = "Images\\osrs.png",
                 Action = a =>
                 {
-                    if (!string.IsNullOrEmpty(x.Url))
+                    var url = HttpUtility.UrlEncode(x.Url);
+                    if (!string.IsNullOrEmpty(url))
                     {
-                        System.Diagnostics.Process.Start(HttpUtility.UrlEncode(x.Url));
+                        System.Diagnostics.Process.Start(url);
                     }
                     
                     return true;
