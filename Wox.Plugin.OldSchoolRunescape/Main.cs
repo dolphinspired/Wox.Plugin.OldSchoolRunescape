@@ -32,10 +32,9 @@ namespace Wox.Plugin.OldSchoolRunescape
                 IcoPath = "Images\\osrs.png",
                 Action = a =>
                 {
-                    var url = HttpUtility.UrlEncode(x.Url);
-                    if (!string.IsNullOrEmpty(url))
+                    if (!string.IsNullOrEmpty(x.Url))
                     {
-                        System.Diagnostics.Process.Start(url);
+                        System.Diagnostics.Process.Start(x.Url);
                     }
                     
                     return true;
