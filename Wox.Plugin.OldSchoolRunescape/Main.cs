@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Net;
@@ -20,13 +21,14 @@ namespace Wox.Plugin.OldSchoolRunescape
 
         public List<Result> Query(Query query)
         {
-            string searchKey = HttpUtility.UrlEncode(string.Join("+", query.Terms));
-            string route = $"http://2007.runescape.wikia.com/api/v1/Search/List?query={searchKey}&limit=10&minArticleQuality=10&batch=1&namespaces=0%2C14";
-            string apiResponse = GetApiResponse(route);
+            var searchKey = HttpUtility.UrlEncode(string.Join("+", query.Terms));
+            var route = $"http://2007.runescape.wikia.com/api/v1/Search/List?query={searchKey}&limit=10&minArticleQuality=10&batch=1&namespaces=0%2C14";
+            var apiResponse = GetApiResponse(route);
 
-            WikiaSearchResponse searchResponse = JsonConvert.DeserializeObject<WikiaSearchResponse>(apiResponse);
+            var searchResponse = JsonConvert.DeserializeObject<WikiaSearchResponse>(apiResponse);
+            var sortedItems = SortByTitleSimilarity(searchResponse.Items, query);
 
-            List<Result> results = searchResponse.Items.Select(x => new Result
+            var results = sortedItems.Select(x => new Result
             {
                 Title = x.Title,
                 SubTitle = Regex.Replace(x.Snippet, "<[^>]*>", ""), // quick-and-dirty "strip HTML"
@@ -58,6 +60,24 @@ namespace Wox.Plugin.OldSchoolRunescape
             response.Close();
 
             return responseContent;
+        }
+
+        private static List<WikiaSearchItem> SortByTitleSimilarity(List<WikiaSearchItem> items, Query query)
+        {
+            if (items == null)
+            {
+                return null;
+            }
+
+            if (items.Count <= 1 || string.IsNullOrEmpty(query?.Search))
+            {
+                return items;
+            }
+            
+            items.ForEach(r => r.SetSearchTermSimilarity(query.Search));
+            items.Sort();
+
+            return items;
         }
     }
 }
