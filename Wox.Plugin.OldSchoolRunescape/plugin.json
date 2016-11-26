@@ -4,7 +4,7 @@
   "Name": "OldSchoolRunescape",
   "Description": "Search the Old School Runescape wiki (2007.runescape.wikia.com)",
   "Author": "dolphinspired",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Language": "csharp",
   "Website": "http://www.runeberry.com",
   "IcoPath": "Images\\osrs.png",
