@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Wox.Plugin.OldSchoolRunescape.Tests
@@ -31,6 +32,7 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
             var results = RunQuery(search);
 
             Assert.That(results, Is.Not.Null);
+            Assert.That(!results.First().Title.Contains("Error"));
         }
 
         [TestCase("bronze longsword")]
@@ -46,7 +48,7 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
 
         [TestCase("rune long", "rune longsword")]
         [TestCase("zulrah", "zulrah")]
-        public void TestBrowserStart(string search, string expectedFirstTitle)
+        public void TestTitleMatch(string search, string expectedFirstTitle)
         {
             var results = RunQuery(search);
 

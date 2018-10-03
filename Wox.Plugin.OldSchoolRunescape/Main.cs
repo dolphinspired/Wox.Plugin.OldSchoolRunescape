@@ -5,14 +5,15 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
-using Newtonsoft.Json;
 using Wox.Plugin.OldSchoolRunescape.Models;
+using HtmlAgilityPack;
 
 namespace Wox.Plugin.OldSchoolRunescape
 {
     public class Main : IPlugin
     {
         private PluginInitContext _context;
+        private const string BaseUrl = "https://oldschool.runescape.wiki";
 
         public void Init(PluginInitContext context)
         {
@@ -22,13 +23,29 @@ namespace Wox.Plugin.OldSchoolRunescape
         public List<Result> Query(Query query)
         {
             var searchKey = HttpUtility.UrlEncode(string.Join("+", query.Terms));
-            var route = $"http://2007.runescape.wikia.com/api/v1/Search/List?query={searchKey}&limit=10&minArticleQuality=10&batch=1&namespaces=0%2C14";
-            var apiResponse = GetApiResponse(route);
+            var route = $"{BaseUrl}/?search={searchKey}&fulltext=1&limit=10";
 
-            var searchResponse = JsonConvert.DeserializeObject<WikiaSearchResponse>(apiResponse);
-            var sortedItems = SortByTitleSimilarity(searchResponse.Items, query);
+            HtmlDocument html;
+            try
+            {
+                html = GetApiResponse(route);
+            }
+            catch (Exception e)
+            {
+                return ToErrorResult("Network Error", e.Message);
+            }
 
-            var results = sortedItems.Select(x => new Result
+            List<MwSearchResultFromHtml> extractedResults;
+            try
+            {
+                extractedResults = ExtractSearchResults(html);
+            }
+            catch (Exception e)
+            {
+                return ToErrorResult("Translation Error", e.Message);
+            }
+
+            var results = extractedResults.Select(x => new Result
             {
                 Title = x.Title,
                 SubTitle = Regex.Replace(x.Snippet, "<[^>]*>", ""), // quick-and-dirty "strip HTML"
@@ -47,37 +64,83 @@ namespace Wox.Plugin.OldSchoolRunescape
             return results;
         }
 
-        private static string GetApiResponse(string route)
+        private static HtmlDocument GetApiResponse(string route)
         {
             WebRequest request = WebRequest.Create(route);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream dataStream = response.GetResponseStream();
-            StreamReader streamReader = new StreamReader(dataStream);
-            string responseContent = streamReader.ReadToEnd();
+            var html = new HtmlDocument();
+            html.Load(dataStream);
 
-            streamReader.Close();
             dataStream.Close();
             response.Close();
 
-            return responseContent;
+            return html;
         }
 
-        private static List<WikiaSearchItem> SortByTitleSimilarity(List<WikiaSearchItem> items, Query query)
+        private static List<MwSearchResultFromHtml> ExtractSearchResults(HtmlDocument html)
         {
-            if (items == null)
+            var list = new List<MwSearchResultFromHtml>();
+
+            var searchResults = html.DocumentNode
+                .Descendants("ul")
+                .FirstOrDefault(x => x.HasClass("mw-search-results"))?
+                .Descendants("li");
+
+            if (searchResults == null || !searchResults.Any())
             {
-                return null;
+                return list;
+            };
+
+            foreach (var searchResult in searchResults)
+            {
+                var divs = searchResult.Descendants("div");
+
+                var headerAnchor = divs.FirstOrDefault(d => d.HasClass("mw-search-result-heading"))?.Descendants("a").FirstOrDefault();
+                var headerTitle = headerAnchor?.GetAttributeValue("title", "");
+                var headerRelativeUrl = headerAnchor?.GetAttributeValue("href", "");
+
+                var resultText = divs.FirstOrDefault(d => d.HasClass("searchresult"))?.InnerHtml;
+
+                if (string.IsNullOrEmpty(headerTitle) || string.IsNullOrEmpty(headerRelativeUrl))
+                {
+                    // Don't add result to the list if it has no title/url for whatever reason
+                    continue;
+                }
+
+                list.Add(new MwSearchResultFromHtml
+                {
+                    Title = headerTitle,
+                    Snippet = resultText,
+                    Url = $"{BaseUrl}{headerRelativeUrl}"
+                });
             }
 
-            if (items.Count <= 1 || string.IsNullOrEmpty(query?.Search))
-            {
-                return items;
-            }
-            
-            items.ForEach(r => r.SetSearchTermSimilarity(query.Search));
-            items.Sort();
+            return list;
+        }
 
-            return items;
+        private static List<Result> ToErrorResult(string title, string message)
+        {
+            return new List<Result>
+            {
+                new Result {
+                    Title = title,
+                    SubTitle = message,
+                    IcoPath = "Images\\osrs.png",
+                    Action = a =>
+                    {
+                        return false;
+                    }
+                }
+            };
+        }
+    }
+
+    internal static class Extensions
+    {
+        public static bool HasClass(this HtmlNode node, string className)
+        {
+            return node.Attributes.Contains("class") && node.Attributes["class"].Value == className;
         }
     }
 }

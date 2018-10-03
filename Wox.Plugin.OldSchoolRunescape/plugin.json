@@ -2,11 +2,11 @@
   "ID": "82641E0684114D4BA58EDD82D7E508CC",
   "ActionKeyword": "osrs",
   "Name": "OldSchoolRunescape",
-  "Description": "Search the Old School Runescape wiki (2007.runescape.wikia.com)",
+  "Description": "Search the Old School Runescape wiki (oldschool.runescape.wiki)",
   "Author": "dolphinspired",
-  "Version": "1.0.1",
+  "Version": "1.0.2",
   "Language": "csharp",
-  "Website": "http://www.runeberry.com",
+  "Website": "https://runeberry.com",
   "IcoPath": "Images\\osrs.png",
   "ExecuteFileName": "OldSchoolRunescape.dll"
 }
