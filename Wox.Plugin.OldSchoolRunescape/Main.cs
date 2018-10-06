@@ -13,7 +13,6 @@ namespace Wox.Plugin.OldSchoolRunescape
     public class Main : IPlugin
     {
         private PluginInitContext _context;
-        private const string BaseUrl = "https://oldschool.runescape.wiki";
 
         public void Init(PluginInitContext context)
         {
@@ -22,8 +21,11 @@ namespace Wox.Plugin.OldSchoolRunescape
 
         public List<Result> Query(Query query)
         {
+            // Use OSRS config if specified, fall back on RS config otherwise.
+            WikiTypeConfig config = query.ActionKeyword == "osrs" ? WikiTypeConfig.Osrs : WikiTypeConfig.Rs;
+
             var searchKey = HttpUtility.UrlEncode(string.Join("+", query.Terms));
-            var route = $"{BaseUrl}/?search={searchKey}&fulltext=1&limit=10";
+            var route = $"{config.BaseUrl}/?search={searchKey}&fulltext=1&limit=10";
 
             HtmlDocument html;
             try
@@ -38,7 +40,7 @@ namespace Wox.Plugin.OldSchoolRunescape
             List<MwSearchResultFromHtml> extractedResults;
             try
             {
-                extractedResults = ExtractSearchResults(html);
+                extractedResults = ExtractSearchResults(html, config);
             }
             catch (Exception e)
             {
@@ -48,12 +50,13 @@ namespace Wox.Plugin.OldSchoolRunescape
             var results = extractedResults.Select(x => new Result
             {
                 Title = x.Title,
-                SubTitle = Regex.Replace(x.Snippet, "<[^>]*>", ""), // quick-and-dirty "strip HTML"
-                IcoPath = "Images\\osrs.png",
+                SubTitle = CleanSnippet(x.Snippet),
+                IcoPath = config.IcoPath,
                 Action = a =>
                 {
                     if (!string.IsNullOrEmpty(x.Url))
                     {
+                        // Open the URL in your default browser via some Windows magic
                         System.Diagnostics.Process.Start(x.Url);
                     }
 
@@ -78,7 +81,7 @@ namespace Wox.Plugin.OldSchoolRunescape
             return html;
         }
 
-        private static List<MwSearchResultFromHtml> ExtractSearchResults(HtmlDocument html)
+        private static List<MwSearchResultFromHtml> ExtractSearchResults(HtmlDocument html, WikiTypeConfig config)
         {
             var list = new List<MwSearchResultFromHtml>();
 
@@ -112,11 +115,27 @@ namespace Wox.Plugin.OldSchoolRunescape
                 {
                     Title = headerTitle,
                     Snippet = resultText,
-                    Url = $"{BaseUrl}{headerRelativeUrl}"
+                    Url = $"{config.BaseUrl}{headerRelativeUrl}"
                 });
             }
 
             return list;
+        }
+
+        private static string CleanSnippet(string snippet)
+        {
+            if (string.IsNullOrWhiteSpace(snippet))
+            {
+                return string.Empty;
+            }
+
+            // quick-and-dirty "strip HTML"
+            var ret = Regex.Replace(snippet, "<[^>]*>", "");
+
+            // attempt to get rid of some annoying wiki markup (bracketed text)
+            ret = Regex.Replace(ret, @"\[[^\]]*]", "");
+
+            return ret;
         }
 
         private static List<Result> ToErrorResult(string title, string message)
@@ -126,7 +145,7 @@ namespace Wox.Plugin.OldSchoolRunescape
                 new Result {
                     Title = title,
                     SubTitle = message,
-                    IcoPath = "Images\\osrs.png",
+                    IcoPath = @"Images\error.png",
                     Action = a =>
                     {
                         return false;

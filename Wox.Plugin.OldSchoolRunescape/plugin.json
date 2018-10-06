@@ -1,12 +1,15 @@
 ﻿{
   "ID": "82641E0684114D4BA58EDD82D7E508CC",
-  "ActionKeyword": "osrs",
+  "ActionKeywords": [
+    "rs",
+    "osrs"
+  ],
   "Name": "OldSchoolRunescape",
-  "Description": "Search the Old School Runescape wiki (oldschool.runescape.wiki)",
+  "Description": "Search the official RuneScape wikis (runescape.wiki and oldschool.runescape.wiki)",
   "Author": "dolphinspired",
   "Version": "1.0.2",
   "Language": "csharp",
   "Website": "https://runeberry.com",
-  "IcoPath": "Images\\osrs.png",
+  "IcoPath": "Images\\rs.png",
   "ExecuteFileName": "OldSchoolRunescape.dll"
 }

@@ -15,30 +15,31 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
             _program = new Main();
         }
 
-        private static List<Result> RunQuery(string search)
+        private static List<Result> RunQuery(string keyword, string search)
         {
             var query = new Query
             {
-                ActionKeyword = "osrs",
+                ActionKeyword = keyword,
                 Terms = search.Split(' ')
             };
 
             return _program.Query(query);
         }
 
-        [TestCase("runite ore")]
-        public void TestApi(string search)
+        [TestCase("rs", "runite ore")]
+        [TestCase("osrs", "runite ore")]
+        public void TestApi(string keyword, string search)
         {
-            var results = RunQuery(search);
+            var results = RunQuery(keyword, search);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(!results.First().Title.Contains("Error"));
         }
 
-        [TestCase("bronze longsword")]
-        public void TestBrowserStart(string search)
+        [TestCase("osrs", "bronze longsword")]
+        public void TestBrowserStart(string keyword, string search)
         {
-            var results = RunQuery(search);
+            var results = RunQuery(keyword, search);
 
             results[0].Action(new ActionContext());
 
@@ -46,11 +47,11 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
             Assert.That(true);
         }
 
-        [TestCase("rune long", "rune longsword")]
-        [TestCase("zulrah", "zulrah")]
-        public void TestTitleMatch(string search, string expectedFirstTitle)
+        [TestCase("rs", "rune long", "rune longsword")]
+        [TestCase("osrs", "zulrah", "zulrah")]
+        public void TestTitleMatch(string keyword, string search, string expectedFirstTitle)
         {
-            var results = RunQuery(search);
+            var results = RunQuery(keyword, search);
 
             Assert.That(results[0].Title.ToLower(), Is.EqualTo(expectedFirstTitle.ToLower()));
         }

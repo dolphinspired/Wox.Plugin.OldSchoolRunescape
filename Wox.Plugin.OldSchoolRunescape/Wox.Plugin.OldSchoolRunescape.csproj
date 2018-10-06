@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="Models\MwSearchResultFromHtml.cs" />
+    <Compile Include="Models\WikiTypeConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
