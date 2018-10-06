@@ -79,7 +79,7 @@ namespace Wox.Plugin.RuneScapeWiki
             {
                 results = extractedResults.Select(x => new Result
                 {
-                    Title = x.Title,
+                    Title = CleanTitle(x.Title),
                     SubTitle = CleanSnippet(x.Snippet),
                     IcoPath = config.IcoPath,
                     Action = a =>
@@ -154,6 +154,14 @@ namespace Wox.Plugin.RuneScapeWiki
             return list;
         }
 
+        private static string CleanTitle(string title)
+        {
+            // Should fix apostrophes, quotes, etc.
+            var ret = HttpUtility.HtmlDecode(title);
+
+            return ret;
+        }
+
         private static string CleanSnippet(string snippet)
         {
             if (string.IsNullOrWhiteSpace(snippet))
@@ -166,6 +174,9 @@ namespace Wox.Plugin.RuneScapeWiki
 
             // attempt to get rid of some annoying wiki markup (bracketed text)
             ret = Regex.Replace(ret, @"\[[^\]]*]", "");
+
+            // Should fix apostrophes, quotes, etc.
+            ret = HttpUtility.HtmlDecode(ret);
 
             return ret;
         }

@@ -53,7 +53,7 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
         }
 
         [TestCase("rsw", "rune long", "rune longsword")]
-        [TestCase("osw", "rune ore", "runite ore")]
+        [TestCase("osw", "zulrah's scales", "zulrah's scales")]
         public void TestTitleMatch(string keyword, string search, string expectedFirstTitle)
         {
             var results = RunQuery(keyword, search);
