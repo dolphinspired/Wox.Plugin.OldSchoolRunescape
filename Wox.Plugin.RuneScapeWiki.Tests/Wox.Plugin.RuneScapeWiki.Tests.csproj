@@ -62,7 +62,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Wox.Plugin.OldSchoolRunescape\Wox.Plugin.RuneScapeWiki.csproj">
+    <ProjectReference Include="..\Wox.Plugin.RuneScapeWiki\Wox.Plugin.RuneScapeWiki.csproj">
       <Project>{4e8a3d84-75f7-4890-b076-50845aaea397}</Project>
       <Name>Wox.Plugin.RuneScapeWiki</Name>
     </ProjectReference>

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wox.Plugin.RuneScapeWiki", "Wox.Plugin.OldSchoolRunescape\Wox.Plugin.RuneScapeWiki.csproj", "{4E8A3D84-75F7-4890-B076-50845AAEA397}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wox.Plugin.RuneScapeWiki", "Wox.Plugin.RuneScapeWiki\Wox.Plugin.RuneScapeWiki.csproj", "{4E8A3D84-75F7-4890-B076-50845AAEA397}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wox.Plugin.RuneScapeWiki.Tests", "Wox.Plugin.OldSchoolRunescape.Tests\Wox.Plugin.RuneScapeWiki.Tests.csproj", "{E2001440-7862-47BF-9C94-37C30B1707B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wox.Plugin.RuneScapeWiki.Tests", "Wox.Plugin.RuneScapeWiki.Tests\Wox.Plugin.RuneScapeWiki.Tests.csproj", "{E2001440-7862-47BF-9C94-37C30B1707B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
