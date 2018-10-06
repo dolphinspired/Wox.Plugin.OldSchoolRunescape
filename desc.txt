@@ -1,0 +1,3 @@
+https://github.com/dolphinspired/Wox.Plugin.OldSchoolRunescape
+
+This plugin provides search results for official RuneScape Wiki (https://runescape.wiki) or the Old School RuneScape Wiki (https://oldschool.runescape.wiki). The resulting pages can be immediately opened in your web browser.
