@@ -17,10 +17,13 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
 
         private static List<Result> RunQuery(string keyword, string search)
         {
+            var terms = new List<string> { keyword };
+            terms.AddRange(search.Split(' '));
+
             var query = new Query
             {
                 ActionKeyword = keyword,
-                Terms = search.Split(' ')
+                Terms = terms.ToArray()
             };
 
             return _program.Query(query);
@@ -36,11 +39,13 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
             Assert.That(!results.First().Title.Contains("Error"));
         }
 
+        [TestCase("rsw", "nex")]
         [TestCase("osw", "bronze longsword")]
         public void TestBrowserStart(string keyword, string search)
         {
             var results = RunQuery(keyword, search);
 
+            // Open the first result in the browser
             results[0].Action(new ActionContext());
 
             // If you got here, ^that didn't blow up. gz
@@ -48,7 +53,7 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
         }
 
         [TestCase("rsw", "rune long", "rune longsword")]
-        [TestCase("osw", "zulrah", "zulrah")]
+        [TestCase("osw", "rune ore", "runite ore")]
         public void TestTitleMatch(string keyword, string search, string expectedFirstTitle)
         {
             var results = RunQuery(keyword, search);

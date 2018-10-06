@@ -21,10 +21,25 @@ namespace Wox.Plugin.RuneScapeWiki
 
         public List<Result> Query(Query query)
         {
+            // It seems like the first word in Terms is the keyword itself?
+            var terms = query.Terms?.Skip(1);
+                
             // Use OSRS config if specified, fall back on RS config otherwise.
             WikiTypeConfig config = query.ActionKeyword == "osw" ? WikiTypeConfig.Osrs : WikiTypeConfig.Rs;
 
-            var searchKey = HttpUtility.UrlEncode(string.Join("+", query.Terms));
+            if (terms == null || !terms.Any())
+            {
+                return new List<Result>
+                {
+                    new Result
+                    {
+                        Title = $"Search the {config.WikiName}",
+                        IcoPath = config.IcoPath
+                    }
+                };
+            }
+
+            var searchKey = HttpUtility.UrlEncode(string.Join("+", terms));
             var route = $"{config.BaseUrl}/?search={searchKey}&fulltext=1&limit=10";
 
             HtmlDocument html;
@@ -47,22 +62,38 @@ namespace Wox.Plugin.RuneScapeWiki
                 return ToErrorResult("Translation Error", e.Message);
             }
 
-            var results = extractedResults.Select(x => new Result
+            List<Result> results;
+            if (!extractedResults.Any())
             {
-                Title = x.Title,
-                SubTitle = CleanSnippet(x.Snippet),
-                IcoPath = config.IcoPath,
-                Action = a =>
+                results = new List<Result>
                 {
-                    if (!string.IsNullOrEmpty(x.Url))
+                    new Result
                     {
-                        // Open the URL in your default browser via some Windows magic
-                        System.Diagnostics.Process.Start(x.Url);
+                        Title = "No results",
+                        SubTitle = $"No results found for search term: '{string.Join(" ", terms)}'",
+                        IcoPath = config.IcoPath
                     }
+                };
+            }
+            else
+            {
+                results = extractedResults.Select(x => new Result
+                {
+                    Title = x.Title,
+                    SubTitle = CleanSnippet(x.Snippet),
+                    IcoPath = config.IcoPath,
+                    Action = a =>
+                    {
+                        if (!string.IsNullOrEmpty(x.Url))
+                        {
+                            // Open the URL in your default browser via some Windows magic
+                            System.Diagnostics.Process.Start(x.Url);
+                        }
 
-                    return true;
-                }
-            }).ToList();
+                        return true;
+                    }
+                }).ToList();
+            }
 
             return results;
         }
@@ -70,6 +101,7 @@ namespace Wox.Plugin.RuneScapeWiki
         private static HtmlDocument GetApiResponse(string route)
         {
             WebRequest request = WebRequest.Create(route);
+            request.Timeout = 10000;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream dataStream = response.GetResponseStream();
             var html = new HtmlDocument();
