@@ -52,8 +52,12 @@
     <Compile Include="Models\WikiTypeConfig.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\error.png" />
-    <Content Include="Images\rs.png" />
+    <Content Include="Images\error.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\rs.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -64,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\osrs.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
