@@ -49,7 +49,7 @@ namespace Wox.Plugin.RuneScapeWiki
             }
             catch (Exception e)
             {
-                return ToErrorResult("Network Error", e.Message);
+                return ToErrorResult("Network Error", e.Message, config);
             }
 
             List<MwSearchResultFromHtml> extractedResults;
@@ -59,7 +59,7 @@ namespace Wox.Plugin.RuneScapeWiki
             }
             catch (Exception e)
             {
-                return ToErrorResult("Translation Error", e.Message);
+                return ToErrorResult("Translation Error", e.Message, config);
             }
 
             List<Result> results;
@@ -170,14 +170,14 @@ namespace Wox.Plugin.RuneScapeWiki
             return ret;
         }
 
-        private static List<Result> ToErrorResult(string title, string message)
+        private static List<Result> ToErrorResult(string title, string message, WikiTypeConfig config)
         {
             return new List<Result>
             {
                 new Result {
                     Title = title,
                     SubTitle = message,
-                    IcoPath = @"Images\error.png",
+                    IcoPath = config.IcoPath,
                     Action = a =>
                     {
                         return false;
