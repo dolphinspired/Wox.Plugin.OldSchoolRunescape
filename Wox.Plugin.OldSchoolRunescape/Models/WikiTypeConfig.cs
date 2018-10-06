@@ -5,7 +5,7 @@
         public static WikiTypeConfig Rs = new WikiTypeConfig
         {
             BaseUrl = "https://runescape.wiki",
-            IcoPath = @"Images\osrs.png"
+            IcoPath = @"Images\rs.png"
         };
 
         public static WikiTypeConfig Osrs = new WikiTypeConfig
