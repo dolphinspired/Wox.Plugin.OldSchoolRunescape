@@ -5,10 +5,10 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
-using Wox.Plugin.OldSchoolRunescape.Models;
+using Wox.Plugin.RuneScapeWiki.Models;
 using HtmlAgilityPack;
 
-namespace Wox.Plugin.OldSchoolRunescape
+namespace Wox.Plugin.RuneScapeWiki
 {
     public class Main : IPlugin
     {
@@ -22,7 +22,7 @@ namespace Wox.Plugin.OldSchoolRunescape
         public List<Result> Query(Query query)
         {
             // Use OSRS config if specified, fall back on RS config otherwise.
-            WikiTypeConfig config = query.ActionKeyword == "osrs" ? WikiTypeConfig.Osrs : WikiTypeConfig.Rs;
+            WikiTypeConfig config = query.ActionKeyword == "osw" ? WikiTypeConfig.Osrs : WikiTypeConfig.Rs;
 
             var searchKey = HttpUtility.UrlEncode(string.Join("+", query.Terms));
             var route = $"{config.BaseUrl}/?search={searchKey}&fulltext=1&limit=10";

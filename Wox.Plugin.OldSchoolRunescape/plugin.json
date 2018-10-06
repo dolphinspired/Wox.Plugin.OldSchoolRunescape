@@ -1,15 +1,15 @@
 ﻿{
-  "ID": "82641E0684114D4BA58EDD82D7E508CC",
+  "ID": "46327A104A02438595B5A6E7D0263CB4",
   "ActionKeywords": [
-    "rs",
-    "osrs"
+    "rsw",
+    "osw"
   ],
-  "Name": "OldSchoolRunescape",
+  "Name": "RuneScapeWiki",
   "Description": "Search the official RuneScape wikis (runescape.wiki and oldschool.runescape.wiki)",
   "Author": "dolphinspired",
-  "Version": "1.0.2",
+  "Version": "2.0.0",
   "Language": "csharp",
   "Website": "https://runeberry.com",
   "IcoPath": "Images\\rs.png",
-  "ExecuteFileName": "OldSchoolRunescape.dll"
+  "ExecuteFileName": "RuneScapeWiki.dll"
 }

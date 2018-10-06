@@ -1,4 +1,4 @@
-﻿namespace Wox.Plugin.OldSchoolRunescape.Models
+﻿namespace Wox.Plugin.RuneScapeWiki.Models
 {
     internal sealed class WikiTypeConfig
     {

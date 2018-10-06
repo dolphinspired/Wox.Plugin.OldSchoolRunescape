@@ -2,7 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 
-namespace Wox.Plugin.OldSchoolRunescape.Tests
+namespace Wox.Plugin.RuneScapeWiki.Tests
 {
     [TestFixture]
     public class PluginTests
@@ -26,8 +26,8 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
             return _program.Query(query);
         }
 
-        [TestCase("rs", "runite ore")]
-        [TestCase("osrs", "runite ore")]
+        [TestCase("rsw", "runite ore")]
+        [TestCase("osw", "runite ore")]
         public void TestApi(string keyword, string search)
         {
             var results = RunQuery(keyword, search);
@@ -36,7 +36,7 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
             Assert.That(!results.First().Title.Contains("Error"));
         }
 
-        [TestCase("osrs", "bronze longsword")]
+        [TestCase("osw", "bronze longsword")]
         public void TestBrowserStart(string keyword, string search)
         {
             var results = RunQuery(keyword, search);
@@ -47,8 +47,8 @@ namespace Wox.Plugin.OldSchoolRunescape.Tests
             Assert.That(true);
         }
 
-        [TestCase("rs", "rune long", "rune longsword")]
-        [TestCase("osrs", "zulrah", "zulrah")]
+        [TestCase("rsw", "rune long", "rune longsword")]
+        [TestCase("osw", "zulrah", "zulrah")]
         public void TestTitleMatch(string keyword, string search, string expectedFirstTitle)
         {
             var results = RunQuery(keyword, search);

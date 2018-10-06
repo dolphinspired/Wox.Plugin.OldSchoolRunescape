@@ -50,7 +50,6 @@
     <Compile Include="Main.cs" />
     <Compile Include="Models\MwSearchResultFromHtml.cs" />
     <Compile Include="Models\WikiTypeConfig.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\error.png" />
@@ -60,7 +59,9 @@
     </Content>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Images\osrs.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

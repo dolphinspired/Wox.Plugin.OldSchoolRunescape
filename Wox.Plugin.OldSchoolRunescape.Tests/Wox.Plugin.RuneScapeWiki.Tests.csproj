@@ -57,16 +57,18 @@
   </Choose>
   <ItemGroup>
     <Compile Include="PluginTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Wox.Plugin.OldSchoolRunescape\Wox.Plugin.OldSchoolRunescape.csproj">
+    <ProjectReference Include="..\Wox.Plugin.OldSchoolRunescape\Wox.Plugin.RuneScapeWiki.csproj">
       <Project>{4e8a3d84-75f7-4890-b076-50845aaea397}</Project>
-      <Name>Wox.Plugin.OldSchoolRunescape</Name>
+      <Name>Wox.Plugin.RuneScapeWiki</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
