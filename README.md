@@ -22,7 +22,7 @@ You can type `settings` into Wox at anytime to access its configuration. I perso
 ### How to use this plugin
 
 * `rsw runite ore` - Search the RuneScape Wiki for 'runite ore'
-* `osw zulrah` - Search the Old School RuneScape Wiki 'zulrah'
+* `osw zulrah` - Search the Old School RuneScape Wiki for 'zulrah'
 * Use the up/down arrow keys to navigate through search results. Up to 10 results will be returned for a search.
 * Left-click or press Enter to open the highlighted result in your browser.
 
