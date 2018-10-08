@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using Wox.Plugin.RuneScapeWiki.Models;
 
 namespace Wox.Plugin.RuneScapeWiki
@@ -41,27 +42,29 @@ namespace Wox.Plugin.RuneScapeWiki
                 }
             }
 
+            // If the cached image is too old or does not exist, download and save it to the cache folder
+            Task.Run(() => DownloadAndSaveThumbnail(cachedImage, sourceUrl));
+
+            // The download will happen in the background. Use the default image in the meantime
+            return config.IcoPath;
+        }
+
+        private static void DownloadAndSaveThumbnail(string filepath, string url)
+        {
             Bitmap downloaded = null;
             Bitmap resized = null;
             try
             {
-                // If the cached image is too old or does not exist, download and save it to the cache folder
-                downloaded = DownloadThumbnail(sourceUrl);
+                
+                downloaded = DownloadThumbnail(url);
                 resized = new Bitmap(downloaded, 28, 28);
-                resized.Save(cachedImage);
-            }
-            catch (Exception e)
-            {
-                // If anything goes wrong, just use the default image for the wiki
-                return config.IcoPath;
+                resized.Save(filepath);
             }
             finally
             {
                 downloaded?.Dispose();
                 resized?.Dispose();
             }
-
-            return cachedImage;
         }
 
         private static Bitmap DownloadThumbnail(string url)
