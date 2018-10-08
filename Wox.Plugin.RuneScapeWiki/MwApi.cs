@@ -23,6 +23,7 @@ namespace Wox.Plugin.RuneScapeWiki
         {
             var url = $"{config.BaseUrl}/api.php?action=query&format=json" +
                 "&generator=search" +
+                "&gsrlimit=10" +
                 "&prop=extracts|info|pageimages" +
                 "&redirects=1" +
                 "&exsentences=2&exlimit=max&exintro=1&explaintext=1&exsectionformat=plain" +
