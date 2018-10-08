@@ -14,15 +14,13 @@ namespace Wox.Plugin.RuneScapeWiki
         {
             return results.Select(x => new Result
             {
-                Title = CleanTitle(x.Title),
-                SubTitle = CleanSnippet(x.Snippet),
+                Title = x.Title,
+                SubTitle = x.Extract,
                 IcoPath = config.IcoPath,
                 Action = a =>
                 {
                     // Open the URL in your default browser via some Windows magic
-                    var url = $"{config.BaseUrl}/?curid={x.PageId}";
-                    Process.Start(url);
-
+                    Process.Start(x.CanonicalUrl);
                     return true;
                 }
             }).ToList();
