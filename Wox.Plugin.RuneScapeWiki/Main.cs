@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
 using Wox.Plugin.RuneScapeWiki.Models;
-using System.Diagnostics;
 
 namespace Wox.Plugin.RuneScapeWiki
 {
@@ -19,9 +16,11 @@ namespace Wox.Plugin.RuneScapeWiki
 
         public List<Result> Query(Query query)
         {
-            // Use OSRS config if specified, fall back on RS config otherwise.
-            WikiTypeConfig config = query.ActionKeyword == "osw" ? WikiTypeConfig.Osrs : WikiTypeConfig.Rs;
+            var keyword = query.ActionKeyword.ToLowerInvariant();
             var search = query.Terms.Length > 1 ? string.Join(" ", query.Terms.Skip(1)) : string.Empty;
+
+            // Use OSRS config if specified, fall back on RS config otherwise.
+            WikiTypeConfig config = keyword == Keywords.Osw ? WikiTypeConfig.Osrs : WikiTypeConfig.Rs;
 
             if (string.IsNullOrEmpty(search))
             {
