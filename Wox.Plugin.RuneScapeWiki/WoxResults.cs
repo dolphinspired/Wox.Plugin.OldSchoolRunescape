@@ -7,13 +7,13 @@ namespace Wox.Plugin.RuneScapeWiki
 {
     internal static class WoxResults
     {
-        public static List<Result> WithSearchResults(List<MwSearchResult> results, WikiTypeConfig config)
+        public static List<Result> WithSearchResults(List<MwSearchResult> results, WikiTypeConfig config, PluginInitContext context)
         {
             return results.Select(x => new Result
             {
                 Title = x.Title,
                 SubTitle = x.Extract,
-                IcoPath = config.IcoPath,
+                IcoPath = MwThumbnails.GetIcoPath(x, config, context),
                 Action = a =>
                 {
                     // Open the URL in your default browser via some Windows magic

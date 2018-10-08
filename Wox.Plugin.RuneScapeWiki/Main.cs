@@ -11,7 +11,7 @@ namespace Wox.Plugin.RuneScapeWiki
 
         public void Init(PluginInitContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
         public List<Result> Query(Query query)
@@ -44,7 +44,7 @@ namespace Wox.Plugin.RuneScapeWiki
             }
             else
             {
-                results = WoxResults.WithSearchResults(mwSearchResults, config);
+                results = WoxResults.WithSearchResults(mwSearchResults, config, this._context);
             }
 
             return results;
