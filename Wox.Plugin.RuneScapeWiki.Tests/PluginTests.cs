@@ -15,35 +15,34 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
             _program = new Main();
         }
 
-        private static List<Result> RunQuery(string keyword, string search)
+        private static List<Result> RunQuery(string search)
         {
-            var terms = new List<string> { keyword };
-            terms.AddRange(search.Split(' '));
+            var terms = search.Split(Query.TermSeperater.ToCharArray());
 
             var query = new Query
             {
-                ActionKeyword = keyword,
-                Terms = terms.ToArray()
+                ActionKeyword = terms[0],
+                Terms = terms
             };
 
             return _program.Query(query);
         }
 
-        [TestCase("rsw", "runite ore")]
-        [TestCase("osw", "runite ore")]
-        public void TestApi(string keyword, string search)
+        [TestCase("rsw runite ore")]
+        [TestCase("osw runite ore")]
+        public void TestApi(string search)
         {
-            var results = RunQuery(keyword, search);
+            var results = RunQuery(search);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(!results.First().Title.Contains("Error"));
         }
 
-        [TestCase("rsw", "nex")]
-        [TestCase("osw", "bronze longsword")]
-        public void TestBrowserStart(string keyword, string search)
+        [TestCase("rsw nex")]
+        [TestCase("osw bronze longsword")]
+        public void TestBrowserStart(string search)
         {
-            var results = RunQuery(keyword, search);
+            var results = RunQuery(search);
 
             // Open the first result in the browser
             results[0].Action(new ActionContext());
@@ -52,13 +51,13 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
             Assert.That(true);
         }
 
-        [TestCase("rsw", "rune long", "rune longsword")]
-        [TestCase("osw", "zulrah's scales", "zulrah's scales")]
-        public void TestTitleMatch(string keyword, string search, string expectedFirstTitle)
+        [TestCase("rsw rune long", "Rune longsword")]
+        [TestCase("osw zulrah's scales", "Zulrah's scales")]
+        public void TestTitleMatch(string search, string expectedFirstTitle)
         {
-            var results = RunQuery(keyword, search);
+            var results = RunQuery(search);
 
-            Assert.That(results[0].Title.ToLower(), Is.EqualTo(expectedFirstTitle.ToLower()));
+            Assert.That(results[0].Title, Is.EqualTo(expectedFirstTitle));
         }
     }
 }
