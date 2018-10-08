@@ -24,7 +24,7 @@ namespace Wox.Plugin.RuneScapeWiki
 
             if (string.IsNullOrEmpty(search))
             {
-                return Results.ToWoxResultsInitial(config);
+                return WoxResults.NoSearchQuery(config);
             }
             
             List<MwSearchResult> mwSearchResults;
@@ -34,22 +34,20 @@ namespace Wox.Plugin.RuneScapeWiki
             }
             catch (Exception e)
             {
-                return Results.ToWoxResultsError("Translation Error", e.Message, config);
+                return WoxResults.Error("Network Error", e.Message, config);
             }
 
             List<Result> results;
             if (!mwSearchResults.Any())
             {
-                results = Results.ToWoxResultsEmpty(search, config);
+                results = WoxResults.NoSearchResults(search, config);
             }
             else
             {
-                results = Results.ToWoxResults(mwSearchResults, config);
+                results = WoxResults.WithSearchResults(mwSearchResults, config);
             }
 
             return results;
         }
-
-        
     }
 }

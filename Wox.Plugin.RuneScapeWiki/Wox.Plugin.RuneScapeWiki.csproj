@@ -55,7 +55,7 @@
     <Compile Include="Models\MwQueryResponse.cs" />
     <Compile Include="Models\WikiTypeConfig.cs" />
     <Compile Include="MwApi.cs" />
-    <Compile Include="Results.cs" />
+    <Compile Include="WoxResults.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\rs.png">
