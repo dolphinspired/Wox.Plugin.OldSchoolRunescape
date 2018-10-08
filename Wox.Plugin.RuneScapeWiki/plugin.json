@@ -4,6 +4,7 @@
     "rsw",
     "osw"
   ],
+  "ActionKeyword": "rsw",
   "Name": "RuneScapeWiki",
   "Description": "Search the official RuneScape wikis (runescape.wiki and oldschool.runescape.wiki)",
   "Author": "dolphinspired",

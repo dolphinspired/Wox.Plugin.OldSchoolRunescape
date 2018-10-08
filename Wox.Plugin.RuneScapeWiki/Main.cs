@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using Wox.Plugin.RuneScapeWiki.Models;
-using HtmlAgilityPack;
+using System.Diagnostics;
 
 namespace Wox.Plugin.RuneScapeWiki
 {
@@ -21,188 +19,38 @@ namespace Wox.Plugin.RuneScapeWiki
 
         public List<Result> Query(Query query)
         {
-            // It seems like the first word in Terms is the keyword itself?
-            var terms = query.Terms?.Skip(1);
-                
             // Use OSRS config if specified, fall back on RS config otherwise.
             WikiTypeConfig config = query.ActionKeyword == "osw" ? WikiTypeConfig.Osrs : WikiTypeConfig.Rs;
+            var search = query.Terms.Length > 1 ? string.Join(" ", query.Terms.Skip(1)) : string.Empty;
 
-            if (terms == null || !terms.Any())
+            if (string.IsNullOrEmpty(search))
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = $"Search the {config.WikiName}",
-                        IcoPath = config.IcoPath
-                    }
-                };
+                return Results.ToWoxResultsInitial(config);
             }
-
-            var searchKey = HttpUtility.UrlEncode(string.Join("+", terms));
-            var route = $"{config.BaseUrl}/?search={searchKey}&fulltext=1&limit=10";
-
-            HtmlDocument html;
+            
+            List<MwSearchResult> mwSearchResults;
             try
             {
-                html = GetApiResponse(route);
+                mwSearchResults = MwApi.QuerySearchAsync(search, config).Result;
             }
             catch (Exception e)
             {
-                return ToErrorResult("Network Error", e.Message, config);
-            }
-
-            List<MwSearchResultFromHtml> extractedResults;
-            try
-            {
-                extractedResults = ExtractSearchResults(html, config);
-            }
-            catch (Exception e)
-            {
-                return ToErrorResult("Translation Error", e.Message, config);
+                return Results.ToWoxResultsError("Translation Error", e.Message, config);
             }
 
             List<Result> results;
-            if (!extractedResults.Any())
+            if (!mwSearchResults.Any())
             {
-                results = new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "No results",
-                        SubTitle = $"No results found for search term: '{string.Join(" ", terms)}'",
-                        IcoPath = config.IcoPath
-                    }
-                };
+                results = Results.ToWoxResultsEmpty(search, config);
             }
             else
             {
-                results = extractedResults.Select(x => new Result
-                {
-                    Title = CleanTitle(x.Title),
-                    SubTitle = CleanSnippet(x.Snippet),
-                    IcoPath = config.IcoPath,
-                    Action = a =>
-                    {
-                        if (!string.IsNullOrEmpty(x.Url))
-                        {
-                            // Open the URL in your default browser via some Windows magic
-                            System.Diagnostics.Process.Start(x.Url);
-                        }
-
-                        return true;
-                    }
-                }).ToList();
+                results = Results.ToWoxResults(mwSearchResults, config);
             }
 
             return results;
         }
 
-        private static HtmlDocument GetApiResponse(string route)
-        {
-            WebRequest request = WebRequest.Create(route);
-            request.Timeout = 10000;
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            var html = new HtmlDocument();
-            html.Load(dataStream);
-
-            dataStream.Close();
-            response.Close();
-
-            return html;
-        }
-
-        private static List<MwSearchResultFromHtml> ExtractSearchResults(HtmlDocument html, WikiTypeConfig config)
-        {
-            var list = new List<MwSearchResultFromHtml>();
-
-            var searchResults = html.DocumentNode
-                .Descendants("ul")
-                .FirstOrDefault(x => x.HasClass("mw-search-results"))?
-                .Descendants("li");
-
-            if (searchResults == null || !searchResults.Any())
-            {
-                return list;
-            };
-
-            foreach (var searchResult in searchResults)
-            {
-                var divs = searchResult.Descendants("div");
-
-                var headerAnchor = divs.FirstOrDefault(d => d.HasClass("mw-search-result-heading"))?.Descendants("a").FirstOrDefault();
-                var headerTitle = headerAnchor?.GetAttributeValue("title", "");
-                var headerRelativeUrl = headerAnchor?.GetAttributeValue("href", "");
-
-                var resultText = divs.FirstOrDefault(d => d.HasClass("searchresult"))?.InnerHtml;
-
-                if (string.IsNullOrEmpty(headerTitle) || string.IsNullOrEmpty(headerRelativeUrl))
-                {
-                    // Don't add result to the list if it has no title/url for whatever reason
-                    continue;
-                }
-
-                list.Add(new MwSearchResultFromHtml
-                {
-                    Title = headerTitle,
-                    Snippet = resultText,
-                    Url = $"{config.BaseUrl}{headerRelativeUrl}"
-                });
-            }
-
-            return list;
-        }
-
-        private static string CleanTitle(string title)
-        {
-            // Should fix apostrophes, quotes, etc.
-            var ret = HttpUtility.HtmlDecode(title);
-
-            return ret;
-        }
-
-        private static string CleanSnippet(string snippet)
-        {
-            if (string.IsNullOrWhiteSpace(snippet))
-            {
-                return string.Empty;
-            }
-
-            // quick-and-dirty "strip HTML"
-            var ret = Regex.Replace(snippet, "<[^>]*>", "");
-
-            // attempt to get rid of some annoying wiki markup (bracketed text)
-            ret = Regex.Replace(ret, @"\[[^\]]*]", "");
-
-            // Should fix apostrophes, quotes, etc.
-            ret = HttpUtility.HtmlDecode(ret);
-
-            return ret;
-        }
-
-        private static List<Result> ToErrorResult(string title, string message, WikiTypeConfig config)
-        {
-            return new List<Result>
-            {
-                new Result {
-                    Title = title,
-                    SubTitle = message,
-                    IcoPath = config.IcoPath,
-                    Action = a =>
-                    {
-                        return false;
-                    }
-                }
-            };
-        }
-    }
-
-    internal static class Extensions
-    {
-        public static bool HasClass(this HtmlNode node, string className)
-        {
-            return node.Attributes.Contains("class") && node.Attributes["class"].Value == className;
-        }
+        
     }
 }
