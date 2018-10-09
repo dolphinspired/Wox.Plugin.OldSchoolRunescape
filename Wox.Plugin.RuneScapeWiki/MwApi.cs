@@ -23,13 +23,13 @@ namespace Wox.Plugin.RuneScapeWiki
         {
             var url = $"{config.BaseUrl}/api.php?action=query&format=json" +
                 "&generator=search" +
-                "&gsrlimit=10" +
-                "&prop=extracts|info|pageimages" +
-                "&redirects=1" +
-                "&exsentences=2&exlimit=max&exintro=1&explaintext=1&exsectionformat=plain" +
-                "&inprop=url" +
-                $"&gsrsearch={HttpUtility.UrlEncode(search)}";
-
+                $"&gsrsearch={HttpUtility.UrlEncode(search)}" +
+                "&gsrlimit=6" + // Limit the number of pages returned by the query
+                "&prop=extracts|info|pageimages" + // Include these fields in each search result
+                "&redirects=1" + // Do not return redirect pages; instead, return the pages that are redirected-to
+                "&exsentences=2&exlimit=max&exintro=1&explaintext=1&exsectionformat=plain" + // Describe how extracts should be returned
+                "&inprop=url"; // Within info, include URLs that point to the page for each search result
+            
             var response = await Client.GetAsync(url);
             var content = await response.Content.ReadAsStringAsync();
             var queryResult = JsonConvert.DeserializeObject<MwQueryResponse>(content);
