@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Wox.Plugin.RuneScapeWiki.Models;
 
 namespace Wox.Plugin.RuneScapeWiki
@@ -12,7 +13,7 @@ namespace Wox.Plugin.RuneScapeWiki
             return results.Select(x => new Result
             {
                 Title = x.Title,
-                SubTitle = x.Extract,
+                SubTitle = CleanExtract(x.Extract),
                 IcoPath = MwThumbnails.GetIcoPath(x, config, context),
                 Action = a =>
                 {
@@ -63,6 +64,16 @@ namespace Wox.Plugin.RuneScapeWiki
                     }
                 }
             };
+        }
+
+        private static string CleanExtract(string extract)
+        {
+            if (string.IsNullOrEmpty(extract))
+            {
+                return extract;
+            }
+
+            return Regex.Replace(extract, @"\r\n?|\n", " ");
         }
     }
 }
