@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using Wox.Plugin.RuneScapeWiki.Models;
 
 namespace Wox.Plugin.RuneScapeWiki
@@ -46,6 +47,18 @@ namespace Wox.Plugin.RuneScapeWiki
                     Title = "No results",
                     SubTitle = $"No results found for search term: '{search}'",
                     IcoPath = config.IcoPath
+                },
+                new Result
+                {
+                    Title = "Create page",
+                    SubTitle = $"Create a new page for '{search}'",
+                    IcoPath = config.IcoPath,
+                    Action = a =>
+                    {
+                        var url = $"{config.BaseUrl}/w/{HttpUtility.UrlEncode(search)}?action=edit";
+                        Process.Start(url);
+                        return true;
+                    }
                 }
             };
         }
