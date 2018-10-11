@@ -25,7 +25,7 @@ namespace Wox.Plugin.RuneScapeWiki
                 "&generator=search" +
                 $"&gsrsearch={HttpUtility.UrlEncode(search)}" +
                 "&gsrlimit=6" + // Limit the number of pages returned by the query
-                "&prop=extracts|info|pageimages" + // Include these fields in each search result
+                "&prop=extracts|info" + // Include these fields in each search result, add |pageimages if thumbnails are restored
                 "&redirects=1" + // Do not return redirect pages; instead, return the pages that are redirected-to
                 "&exsentences=2&exlimit=max&exintro=1&explaintext=1&exsectionformat=plain" + // Describe how extracts should be returned
                 "&inprop=url"; // Within info, include URLs that point to the page for each search result
