@@ -8,7 +8,7 @@
   "Name": "RuneScapeWiki",
   "Description": "Search the official RuneScape wikis (runescape.wiki and oldschool.runescape.wiki)",
   "Author": "dolphinspired",
-  "Version": "2.0.0",
+  "Version": "2.1.0",
   "Language": "csharp",
   "Website": "https://runeberry.com",
   "IcoPath": "Images\\rs.png",
