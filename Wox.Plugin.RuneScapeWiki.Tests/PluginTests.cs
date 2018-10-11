@@ -51,6 +51,19 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
             Assert.That(true);
         }
 
+        [TestCase("rsw i will trim ur armor meet me in lvl 32 wildy by the lava maze")]
+        [TestCase("osw i'm still mad they rebalanced zulrah before i started farming it ironman btw")]
+        public void TestBrowserStartNoResults(string search)
+        {
+            var results = RunQuery(search);
+
+            // Open the second result in the browser, which should be the edit page
+            results[1].Action(new ActionContext());
+
+            // If you got here, ^that didn't blow up. gz again
+            Assert.That(true);
+        }
+
         [TestCase("rsw rune long", "Rune longsword")]
         [TestCase("osw zulrah's scales", "Zulrah's scales")]
         public void TestTitleMatch(string search, string expectedFirstTitle)
@@ -58,6 +71,17 @@ namespace Wox.Plugin.RuneScapeWiki.Tests
             var results = RunQuery(search);
 
             Assert.That(results[0].Title, Is.EqualTo(expectedFirstTitle));
+        }
+
+        [TestCase("rsw sldjiwemvoyajsajfk;sa")]
+        [TestCase("osw   e5a4 aw8 5475tnga874v  a")]
+        public void TestNoResults(string search)
+        {
+            var results = RunQuery(search);
+
+            Assert.That(results.Count == 2);
+            Assert.That(results[0].Title, Is.EqualTo("No results"));
+            Assert.That(results[1].Title, Is.EqualTo("Create page"));
         }
     }
 }

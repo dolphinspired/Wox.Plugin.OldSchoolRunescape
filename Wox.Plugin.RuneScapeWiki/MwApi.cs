@@ -43,7 +43,7 @@ namespace Wox.Plugin.RuneScapeWiki
                     .OrderBy(x => x.Index)
                     .ToList();
 
-                return orderedResults;
+                return orderedResults ?? new List<MwSearchResult>(0);
             }
             catch (Exception e)
             {
