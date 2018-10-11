@@ -19,6 +19,8 @@ You can type `settings` into Wox at anytime to access its configuration. I perso
 * Hide Wox on startup (without this, the Wox bar just kind of hangs around after a restart until you Esc out of it)
 * Hide Wox when focus is lost (so you can click out of the Wox bar at any time to make it go away)
 
+If the Wox package manager (wpm) is ever down for some reason, you can download this plugin's latest release from the [Releases](https://github.com/dolphinspired/Wox.Plugin.RuneScapeWiki/releases) page.
+
 ### How to use this plugin
 
 * `rsw runite ore` - Search the RuneScape Wiki for 'runite ore'
