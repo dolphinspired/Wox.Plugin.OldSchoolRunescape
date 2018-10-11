@@ -14,7 +14,8 @@ namespace Wox.Plugin.RuneScapeWiki
             {
                 Title = x.Title,
                 SubTitle = CleanExtract(x.Extract),
-                IcoPath = MwThumbnails.GetIcoPath(x, config, context),
+                IcoPath = config.IcoPath,
+                //IcoPath = MwThumbnails.GetIcoPath(x, config, context), // Removed image thumbnail functionality, not stable
                 Action = a =>
                 {
                     // Open the URL in your default browser via some Windows magic
