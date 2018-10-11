@@ -32,15 +32,24 @@ namespace Wox.Plugin.RuneScapeWiki
             
             var response = await Client.GetAsync(url);
             var content = await response.Content.ReadAsStringAsync();
-            var queryResult = JsonConvert.DeserializeObject<MwQueryResponse>(content);
+            
+            try
+            {
+                var queryResult = JsonConvert.DeserializeObject<MwQueryResponse>(content);
 
-            // Sort results by search relevance
-            var orderedResults = queryResult.Query.Pages
-                .Select(x => x.Value)
-                .OrderBy(x => x.Index)
-                .ToList();
+                // Sort results by search relevance
+                var orderedResults = queryResult?.Query?.Pages?
+                    .Select(x => x.Value)
+                    .OrderBy(x => x.Index)
+                    .ToList();
 
-            return orderedResults;
+                return orderedResults;
+            }
+            catch (Exception e)
+            {
+                // If anything messes up on the transform, just return no results
+                return new List<MwSearchResult>(0);
+            }
         }
     }
 }
